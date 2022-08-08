@@ -2,41 +2,15 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Sequence, F
 from sqlalchemy.orm import relationship
 from .database import Base
 
-"""
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True )
-    name = Column(String, index=True)
-    items = relationship("Item", secondary="useritems", back_populates="users")
-
-
-class Item(Base):
-    __tablename__ = "items"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-
-    users = relationship("User", secondary="useritems", back_populates="items")
-
-
-class User_Items(Base):
-    __tablename__ = "useritems"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    item_id = Column(Integer, ForeignKey("items.id"))
-"""
-
 
 class Cafes(Base):
-    __Tablename__ = "Cafes"
+    __tablename__ = "Cafes"
     Id = Column(Integer, primary_key=True, index=True)
     Name = Column(String, nullable=False)
 
 
 class Users(Base):
-    __Tablename__ = "Users"
+    __tablename__ = "Users"
     Id = Column(Integer, primary_key=True, index=True)
     Login = Column(String, nullable=False)
     HashedPassword = Column(String, nullable=False)
@@ -48,7 +22,7 @@ class Users(Base):
 
 
 class Employees(Base):
-    __Tablename__ = "Employees"
+    __tablename__ = "Employees"
     Id = Column(Integer, primary_key=True, index=True)
     CafeId = Column(Integer,  ForeignKey("Cafes.Id"), nullable=False)
     Login = Column(String, nullable=False)
@@ -61,14 +35,14 @@ class Employees(Base):
 
 
 class Recipes(Base):
-    __Tablename__ = "Recipes"
+    __tablename__ = "Recipes"
     Id = Column(Integer, primary_key=True, index=True)
     Name = Column(String, nullable=False)
     Description = Column(String, nullable=True)
 
 
 class RecipeIngredients(Base):
-    __Tablename__ = "RecipeIngredients"
+    __tablename__ = "RecipeIngredients"
     Id = Column(Integer, primary_key=True, index=True)
     RecipeId = Column(Integer,  ForeignKey("Recipes.Id"), nullable=False)
     FoodProductId = Column(Integer,  ForeignKey("FoodProducts.Id"), nullable=False)
@@ -76,13 +50,13 @@ class RecipeIngredients(Base):
 
 
 class FoodProducts(Base):
-    __Tablename__ = "FoodProducts"
+    __tablename__ = "FoodProducts"
     Id = Column(Integer, primary_key=True, index=True)
     Name = Column(String, nullable=False)
 
 
 class Storage(Base):
-    __Tablename__ = "Storage"
+    __tablename__ = "Storage"
     Id = Column(Integer, primary_key=True, index=True)
     CafeId = Column(Integer,  ForeignKey("Cafes.Id"), nullable=False)
     FoodProductId = Column(Integer,  ForeignKey("FoodProducts.Id"), nullable=False)
@@ -90,24 +64,25 @@ class Storage(Base):
     Number = Column(Float, nullable=False)
 
 
-
 class Orders(Base):
-    __Tablename__ = "Orders"
+    __tablename__ = "Orders"
     Id = Column(Integer, primary_key=True, index=True)
     CafeId = Column(Integer,  ForeignKey("Cafes.Id"), nullable=False)
     UserId = Column(Integer,  ForeignKey("Users.Id"), nullable=False)
     Description = Column(String, nullable=True)
+    #Items = relationship("Recipes", secondary="OrderItems", back_populates="items")
+    #Разобраться и вставить связи
 
 
 class OrderItems(Base):
-    __Tablename__ = "OrderItems"
+    __tablename__ = "OrderItems"
     Id = Column(Integer, primary_key=True, index=True)
     OrderId = Column(Integer, ForeignKey("Orders.Id"), nullable=False)
     RecipeId = Column(Integer, ForeignKey("Recipes.Id"), nullable=False)
 
 
 class Feedbacks(Base):
-    __Tablename__ = "Feedbacks"
+    __tablename__ = "Feedbacks"
     Id = Column(Integer, primary_key=True, index=True)
     UserId = Column(Integer, ForeignKey("Users.Id"), nullable=False)
     Description = Column(String, nullable=True)

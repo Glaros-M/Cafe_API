@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import update
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
@@ -17,46 +18,43 @@ def get_db():
     finally:
         db.close()
 
+
 app = FastAPI()
 
-@app.post("/users")
-def create_user(user: schemas.UserBase, db: Session = Depends(get_db)):
-    db_user = models.User(name=user.name)
-    db.add(db_user)
+
+@app.post("/cafes")
+def create_cafe(cafe: schemas.CafeCreate, db: Session = Depends(get_db)):
+    db_cafe = models.Cafes(Name=cafe.Name)
+    db.add(db_cafe)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(db_cafe)
+    return db_cafe
 
 
-@app.get("/users", response_model=list[schemas.User])
-async def get_users(db: Session = Depends(get_db)):
-    db_books = db.query(models.User).options(joinedload(models.User.items)).all()
-    return db_books
+@app.get("/cafes")
+def get_all_cafes(db: Session = Depends(get_db)):
+    db_cafes = db.query(models.Cafes).all()
+    return db_cafes
 
 
-@app.post("/items")
-def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
-    db_item = models.Item(title=item.title)
-    db.add(db_item)
+@app.put("/cafes/{cafe_id}")
+def update_cafe(cafe_id: int, cafe: schemas.CafeCreate, db: Session = Depends(get_db)):
+    ans = db.query(models.Cafes).filter_by(Id=cafe_id).update(cafe.dict())
     db.commit()
-    db.refresh(db_item)
-    add_owners(db_item.id, item.owners, db)
-    db.refresh(db_item)
-    return db_item
+    db_cafe = db.query(models.Cafes).filter_by(Id=cafe_id).first()
+    return db_cafe
 
 
-def add_owners(item_id: int, owners: List[schemas.UserFromDb], db: Session = Depends(get_db)):
-    list1 = []
-    for owner in owners:
-        db_useritems = models.User_Items(user_id=owner.id, item_id=item_id)
-        db.add(db_useritems)
-        db.commit()
-        list1.append(db_useritems)
-    return list1
+@app.delete("/cafes/{cafe_id}")
+def delete_cafe(cafe_id: int,  db: Session = Depends(get_db)):
+    db_cafe = db.get(models.Cafes, cafe_id)
+    if not db_cafe:
+        raise HTTPException(status_code=404, detail="Cafe not found")
+    db.delete(db_cafe)
+    return {"ok": True}
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
 

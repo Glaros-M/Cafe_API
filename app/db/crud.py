@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 
-
+"""
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
@@ -40,3 +40,4 @@ def _create_user_item(db: Session, user_id: int, item_id: int):
     db.commit()
     db.refresh(db_user_item)
     return db_user_item
+"""
