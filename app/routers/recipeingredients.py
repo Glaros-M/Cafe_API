@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 
 
 router = APIRouter(
-    prefix="/recipes/{recipe_id}",
-    tags=["recipes", "ingredients"]
+    prefix="/recipes",
+    tags=["recipes"]
 )
 
 
-@router.post("/ingredients")
+@router.post("/{recipe_id}/ingredients")
 def add_ingredient_to_recipe(recipe_id: int, ingredient: schemas.RecipeIngredientsCreate, db: Session = Depends(get_db)):
     db_ingredient = models.RecipeIngredients(**ingredient.dict(), RecipeId=recipe_id)
     db.add(db_ingredient)
@@ -20,13 +20,13 @@ def add_ingredient_to_recipe(recipe_id: int, ingredient: schemas.RecipeIngredien
     return db_ingredient
 
 
-@router.get("/ingredients")
+@router.get("/{recipe_id}/ingredients")
 def get_all_ingredients(recipe_id: int, db: Session = Depends(get_db)):
     db_recipes = db.query(models.RecipeIngredients).filter_by(RecipeId=recipe_id).all()
     return db_recipes
 
 
-@router.put("/ingredients/{ingredient_id}")
+@router.put("/{recipe_id}/ingredients/{ingredient_id}")
 def update_ingredient(recipe_id: int, ingredient_id: int, ingredient: schemas.RecipeIngredientsCreate, db: Session = Depends(get_db)):
     ans = db.query(models.RecipeIngredients).filter_by(Id=ingredient_id, RecipeId=recipe_id).update(ingredient.dict())
     db.commit()

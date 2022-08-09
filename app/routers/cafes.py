@@ -22,6 +22,11 @@ def get_all_cafes(db: Session = Depends(get_db)):
     return CafeCRUD.read_all(db)
 
 
+@router.get("/{cafe_id}")
+def get_one_cafe(cafe_id: int, db: Session = Depends(get_db)):
+    return CafeCRUD.read_one(cafe_id, db)
+
+
 @router.put("/{cafe_id}")
 def update_cafe(cafe_id: int, cafe: schemas.CafeCreate, db: Session = Depends(get_db)):
     return CafeCRUD.update(cafe_id, cafe, db)

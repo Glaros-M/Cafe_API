@@ -9,10 +9,8 @@ class Cafe(CafeCreate):
     Id: int
 
 
-class UserCreate(BaseModel):
-    """Some text about UserCreate"""
+class UserBase(BaseModel):
     Login: str
-    Password: str
     Name: str
     Surname: str
     Patronymic: str
@@ -20,7 +18,12 @@ class UserCreate(BaseModel):
     Type: str
 
 
-class User(UserCreate):
+class UserCreate(UserBase):
+    """Some text about UserCreate"""
+    Password: str
+
+
+class User(UserBase):
     Id: int
 
 
@@ -55,6 +58,55 @@ class FoodProductsCreate(BaseModel):
 
 class FoodProducts(FoodProductsCreate):
     Id: int
+
+
+class EmployeeBase(BaseModel):
+    CafeId: int
+    Login: str
+    Name: str
+    Surname: str
+    Patronymic: str
+    Birthday: str
+    Post: str
+
+
+class EmploeeCreate(EmployeeBase):
+    Password: str
+
+
+class EmploeeToDB(EmployeeBase):
+    HashedPassword: str
+
+
+class Employee(EmployeeBase):
+    Id: int
+
+
+class FeedbackCreate(BaseModel):
+    UserId: int
+    Description: str
+    Grade: int
+
+
+class Feedback(FeedbackCreate):
+    Id: int
+
+
+class StorageCreate(BaseModel):
+    CafeId: int
+    FoodProductId: int
+    Measure: str
+    Number: int
+
+
+class Storage(StorageCreate):
+    Id: int
+
+
+
+
+
+
 
 class Config:
     orm_mode = True
