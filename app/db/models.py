@@ -39,6 +39,7 @@ class Recipes(Base):
     Id = Column(Integer, primary_key=True, index=True)
     Name = Column(String, nullable=False)
     Description = Column(String, nullable=True)
+    Ingredients = relationship("RecipeIngredients", back_populates='Recipe')
 
 
 class RecipeIngredients(Base):
@@ -46,7 +47,8 @@ class RecipeIngredients(Base):
     Id = Column(Integer, primary_key=True, index=True)
     RecipeId = Column(Integer,  ForeignKey("Recipes.Id"), nullable=False)
     FoodProductId = Column(Integer,  ForeignKey("FoodProducts.Id"), nullable=False)
-    Number = Column(Integer, nullable=False)
+    Number = Column(Float, nullable=False)
+    Recipe = relationship("Recipes", back_populates='Ingredients')
 
 
 class FoodProducts(Base):

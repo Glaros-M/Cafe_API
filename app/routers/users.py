@@ -9,7 +9,9 @@ router = APIRouter(
     prefix="/users",
     tags=["users"]
 )
-
+"""
+НЕобходимо доделать хеширование пароля, возможно подключить безопасность.
+"""
 
 @router.post("")
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
@@ -40,4 +42,6 @@ def delete_user(user_id: int,  db: Session = Depends(get_db)):
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     db.delete(db_user)
+    db.commit()
+
     return {"ok": True}
