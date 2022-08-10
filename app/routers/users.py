@@ -13,12 +13,20 @@ router = APIRouter(
 НЕобходимо доделать хеширование пароля, возможно подключить безопасность.
 """
 
+
+def fake_hash_password_in_schema_object(data):
+    b = schemas.UserToDB(**data.dict(), HashedPassword=data.Password)
+    return b
+
+
 @router.post("")
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = models.Users(**user.dict())
+    data = fake_hash_password_in_schema_object(user)
+    db_user = models.Users(**data.dict())
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    db_user = schemas.User(**db_user.__dict__)
     return db_user
 
 

@@ -22,6 +22,9 @@ class UserCreate(UserBase):
     """Some text about UserCreate"""
     Password: str
 
+class UserToDB(UserBase):
+    HashedPassword: str
+
 
 class User(UserBase):
     Id: int
@@ -103,9 +106,23 @@ class Storage(StorageCreate):
     Id: int
 
 
+class OrdersCreate(BaseModel):
+    CafeId: int
+    UserId: int
+    Description: str
 
 
+class Orders(OrdersCreate):
+    Id: int
 
+
+class OrderItemsCreate(BaseModel):
+    OrderId: int
+    RecipeId: int
+
+
+class OrderItems(OrderItemsCreate):
+    Id: int
 
 
 class Config:
