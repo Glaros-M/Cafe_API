@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from ..db import models, schemas
 from ..db.database import get_db
-from fastapi import Depends,  HTTPException
+from fastapi import Depends
 from sqlalchemy.orm import Session
-
+from ..db.crud import OrderItemsCRUD as CRUD
 
 router = APIRouter(
     prefix="/orders",
@@ -13,11 +13,8 @@ router = APIRouter(
 
 @router.post("/{order_id}/items")
 def add_item_to_order(order_id: int, item: schemas.OrderItemsCreate, db: Session = Depends(get_db)):
-    db_item = models.OrderItems(**item.dict(), OrderId=order_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+    db_item = schemas.OrderItemsCreate2(**item.dict(), OrderId=order_id)
+    return CRUD.create(db_item, db)
 
 
 @router.get("/{order_id}/items")
@@ -38,10 +35,5 @@ def update_ingredient(order_id: int, item_id: int, item: schemas.OrderItems, db:
 
 @router.delete("/{order_id}/items/{item_id}")
 def delete_ingredient(item_id: int,  db: Session = Depends(get_db)):
-    db_item = db.get(models.OrderItems, item_id)
-    if not db_item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    db.delete(db_item)
-    db.commit()
-    return {"ok": True}
+    return CRUD.delete(item_id, db)
 

@@ -117,11 +117,15 @@ class Orders(OrdersCreate):
 
 
 class OrderItemsCreate(BaseModel):
-    OrderId: int
+    """OrderId: int перенес в ОрдерИтемс из за логики вызова АПИ"""
     RecipeId: int
 
 
-class OrderItems(OrderItemsCreate):
+class OrderItemsCreate2(OrderItemsCreate):
+    OrderId: int
+
+
+class OrderItems(OrderItemsCreate2):
     Id: int
 
 

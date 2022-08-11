@@ -3,14 +3,6 @@ from fastapi import HTTPException
 from . import models, schemas
 
 
-def fake_hash_password_in_schema_object(data):
-    "Где лучше это разместить? пока что перенес в роутер"
-    password = data.Password
-    hash_password = hash(password)
-    data.dict().pop("Password")
-    data.dict().update({"HashedPassword": hash_password})
-
-
 class BaseCRUD:
     def __init__(self, name, model, schema):
         """Можно добавить сюда схема создания, схема полная что бы указывать responce_model"""
@@ -54,3 +46,4 @@ FeedbackCRUD = BaseCRUD("Feedback", models.Feedbacks, schemas.FeedbackCreate)
 StorageCRUD = BaseCRUD("Storage", models.Storage, schemas.StorageCreate)
 OrdersCRUD = BaseCRUD("Order", models.Orders, schemas.OrdersCreate)
 OrderItemsCRUD = BaseCRUD("OrderItem", models.OrderItems, schemas.OrderItemsCreate)
+FoodProductsCRUD = BaseCRUD("FoodProduct", models.FoodProducts, schemas.FoodProductsCreate)
