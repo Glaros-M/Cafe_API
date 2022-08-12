@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from . import models, schemas
 
+from sqlalchemy import exc
+
 
 class BaseCRUD:
     def __init__(self, name, model, schema):
@@ -23,20 +25,30 @@ class BaseCRUD:
 
     def read_one(self, id: int, db: Session):
         db_item = db.get(self.model, id)
+        if not db_item:
+            raise HTTPException(status_code=404, detail=f"{self.name} not found")
         return db_item
 
     def update(self, id: int, item,  db: Session):
-        ans = db.query(self.model).filter_by(Id=id).update(item.dict())
+        ans = db.get(self.model, id)
+        if not ans:
+            raise HTTPException(status_code=404, detail=f"{self.name} not found")
+        db.query(self.model).filter_by(Id=id).update(item.dict())
         db.commit()
         db_item = db.query(self.model).filter_by(Id=id).first()
         return db_item
 
     def delete(self, id: int, db: Session):
-        db_item = db.get(self.model, id)
-        if not db_item:
-            raise HTTPException(status_code=404, detail=f"{self.name} not found")
-        db.delete(db_item)
-        db.commit()
+        try:
+            db_item = db.get(self.model, id)
+            if not db_item:
+                raise HTTPException(status_code=404, detail=f"{self.name} not found")
+            db.delete(db_item)
+            db.commit()
+        except exc.IntegrityError as exc1:
+            comment = f"Ошибка базы данных. Пока что нет каскадного удаления."
+            text = {"comment": comment, "exception": f"{exc1}"}
+            raise HTTPException(status_code=500, detail=text)
         return {"ok": True}
 
 

@@ -9,9 +9,6 @@ router = APIRouter(
     prefix="/users",
     tags=["users"]
 )
-"""
-НЕобходимо доделать хеширование пароля, возможно подключить безопасность.
-"""
 
 
 def fake_hash_password_in_schema_object(data):
