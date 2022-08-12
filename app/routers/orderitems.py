@@ -4,6 +4,7 @@ from ..db.database import get_db
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from ..db.crud import OrderItemsCRUD as CRUD
+from ..logic import orderslogic
 
 router = APIRouter(
     prefix="/orders",
@@ -13,8 +14,9 @@ router = APIRouter(
 
 @router.post("/{order_id}/items")
 def add_item_to_order(order_id: int, item: schemas.OrderItemsCreate, db: Session = Depends(get_db)):
-    db_item = schemas.OrderItemsCreate2(**item.dict(), OrderId=order_id)
-    return CRUD.create(db_item, db)
+    #db_item = schemas.OrderItemsCreate2(**item.dict(), OrderId=order_id)
+    db_item = orderslogic.add_item_to_order(item, order_id, db)
+    return db_item
 
 
 @router.get("/{order_id}/items")
